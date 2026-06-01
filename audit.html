@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Audit | Maverick AI Consulting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #050B1A;
+    --bg-dark: #0A1428;
+    --bg-card: #0F1E3A;
+    --bg-card-hover: #142847;
+    --primary: #1B6FDB;
+    --primary-bright: #2E8AF5;
+    --primary-deep: #003B8C;
+    --accent-cyan: #7DF9FF;
+    --accent-silver: #E8F0F8;
+    --text-bright: #FFFFFF;
+    --text-body: #C8D4E6;
+    --text-muted: #7A8BA8;
+    --border: rgba(125, 249, 255, 0.15);
+    --border-strong: rgba(125, 249, 255, 0.3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-body);
+    overflow-x: hidden;
+    line-height: 1.65;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(27, 111, 219, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27, 111, 219, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 500px; height: 500px; background: var(--primary); top: -100px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--accent-cyan); bottom: -100px; right: -100px; opacity: 0.12; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(5, 11, 26, 0.7);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-bright);
+    letter-spacing: 2px;
+    text-decoration: none;
+  }
+  .nav-brand svg { width: 36px; height: 36px; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-body);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent-cyan); }
+  .nav-links a.active { color: var(--accent-cyan); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--primary), var(--primary-bright));
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600 !important;
+    transition: all 0.3s !important;
+    box-shadow: 0 4px 20px rgba(46, 138, 245, 0.3);
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(46, 138, 245, 0.5); }
+
+  /* Hero */
+  .page-hero {
+    padding: 160px 40px 60px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .page-hero .tagline {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-cyan);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .page-hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-bright);
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .page-hero h1 .accent {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--primary-bright));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .page-hero p {
+    font-size: 19px;
+    color: var(--text-body);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* Sections */
+  section { position: relative; z-index: 1; padding: 80px 40px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .container-narrow { max-width: 920px; margin: 0 auto; }
+
+  .section-tag {
+    display: inline-block;
+    color: var(--accent-cyan);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding: 6px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    background: rgba(125, 249, 255, 0.05);
+  }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(30px, 4vw, 46px);
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+  }
+  .section-subtitle {
+    font-size: 17px;
+    color: var(--text-body);
+    margin-bottom: 48px;
+  }
+  .section-header { margin-bottom: 56px; text-align: center; }
+  .section-header .section-subtitle { max-width: 700px; margin-left: auto; margin-right: auto; }
+
+  /* Why an Audit */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .why-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    transition: all 0.3s;
+  }
+  .why-card:hover { border-color: var(--border-strong); transform: translateY(-4px); }
+  .why-card .why-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(27, 111, 219, 0.2), rgba(125, 249, 255, 0.1));
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: var(--accent-cyan);
+  }
+  .why-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .why-card p { font-size: 15px; line-height: 1.65; }
+
+  /* Tier Cards */
+  .tiers-section { background: linear-gradient(180deg, transparent, rgba(15, 30, 58, 0.3), transparent); }
+  .tier-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+  .tier-card {
+    background: linear-gradient(180deg, var(--bg-card), rgba(15, 30, 58, 0.5));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 36px;
+    position: relative;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  .tier-card.featured {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 16px 50px rgba(125, 249, 255, 0.15);
+  }
+  .tier-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--accent-cyan), var(--primary-bright));
+    color: var(--bg-deep);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+  .tier-card .tier-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    color: var(--accent-cyan);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .tier-card .tier-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    color: var(--text-bright);
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .tier-card .tier-tagline {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .tier-card .tier-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .tier-card .tier-price .amount {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1;
+  }
+  .tier-card .tier-price .currency {
+    font-size: 24px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .tier-card .tier-period { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
+  .tier-card .tier-cta {
+    background: linear-gradient(135deg, var(--primary), var(--primary-bright));
+    color: white;
+    padding: 14px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    text-align: center;
+    transition: all 0.3s;
+    margin-bottom: 28px;
+    display: block;
+  }
+  .tier-card .tier-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(46, 138, 245, 0.4); }
+  .tier-card.featured .tier-cta {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--primary-bright));
+    color: var(--bg-deep);
+  }
+  .tier-card .tier-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+  .tier-card .tier-list li {
+    padding: 10px 0;
+    font-size: 14.5px;
+    color: var(--text-body);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    border-bottom: 1px solid rgba(125, 249, 255, 0.06);
+  }
+  .tier-card .tier-list li:last-child { border-bottom: none; }
+  .tier-card .tier-list li::before {
+    content: '✓';
+    color: var(--accent-cyan);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .tier-card .tier-list .section-divider {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-weight: 600;
+  }
+  .tier-card .tier-list .section-divider::before { content: ''; }
+
+  .delivery-note {
+    text-align: center;
+    margin-top: 16px;
+    padding: 18px 24px;
+    background: rgba(125, 249, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--text-body);
+  }
+  .delivery-note strong { color: var(--accent-cyan); }
+
+  /* Process */
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    position: relative;
+  }
+  .process-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+    position: relative;
+  }
+  .process-step .step-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--primary-bright));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+  }
+  .process-step h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .process-step p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+  /* FAQ on this page */
+  .audit-faq { display: flex; flex-direction: column; gap: 14px; }
+  .audit-faq-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+  }
+  .audit-faq-item h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-bright);
+    font-size: 17px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .audit-faq-item p { font-size: 15px; line-height: 1.7; }
+
+  /* CTA */
+  .cta-section { padding: 100px 40px; }
+  .cta-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, var(--bg-card), rgba(15, 30, 58, 0.6));
+    border: 1px solid var(--border-strong);
+    border-radius: 24px;
+    padding: 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-wrap::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; right: -50%; bottom: -50%;
+    background: radial-gradient(circle, rgba(125, 249, 255, 0.08) 0%, transparent 50%);
+    animation: slowRotate 30s linear infinite;
+    z-index: 0;
+  }
+  .cta-content { position: relative; z-index: 1; }
+  .cta-wrap h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 36px;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .cta-wrap p { font-size: 17px; margin-bottom: 32px; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-bright));
+    color: white;
+    padding: 16px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 8px 30px rgba(46, 138, 245, 0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(46, 138, 245, 0.6); }
+
+  @keyframes slowRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Footer */
+  footer {
+    padding: 60px 40px 40px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+  }
+  footer .footer-brand {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-bright);
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+  footer .footer-tag {
+    color: var(--accent-cyan);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links a:not(.nav-cta):not(.active) { display: none; }
+    .page-hero { padding: 120px 20px 40px; }
+    section { padding: 60px 20px; }
+    .why-grid { grid-template-columns: 1fr; }
+    .tier-grid { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .cta-wrap { padding: 36px 24px; }
+    .cta-wrap h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- ===== NAVIGATION ===== -->
+<nav>
+  <a href="index.html" class="nav-brand">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="navStarLight" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#2E8AF5"/>
+          <stop offset="100%" stop-color="#1B6FDB"/>
+        </linearGradient>
+        <linearGradient id="navStarDark" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#0053BC"/>
+          <stop offset="100%" stop-color="#001F45"/>
+        </linearGradient>
+      </defs>
+      <polygon points="0,0 0,-80 -17.8,-24.6" fill="url(#navStarLight)"/>
+      <polygon points="0,0 -76.1,-24.7 -28.9,9.4" fill="url(#navStarLight)"/>
+      <polygon points="0,0 -47,64.7 0,30.4" fill="url(#navStarLight)"/>
+      <polygon points="0,0 47,64.7 28.9,9.4" fill="url(#navStarLight)"/>
+      <polygon points="0,0 76.1,-24.7 17.8,-24.6" fill="url(#navStarLight)"/>
+      <polygon points="0,0 0,-80 17.8,-24.6" fill="url(#navStarDark)"/>
+      <polygon points="0,0 -76.1,-24.7 -17.8,-24.6" fill="url(#navStarDark)"/>
+      <polygon points="0,0 -47,64.7 -28.9,9.4" fill="url(#navStarDark)"/>
+      <polygon points="0,0 47,64.7 0,30.4" fill="url(#navStarDark)"/>
+      <polygon points="0,0 76.1,-24.7 28.9,9.4" fill="url(#navStarDark)"/>
+      <circle cx="0" cy="0" r="6" fill="#FFFFFF"/>
+    </svg>
+    MAVERICK AI
+  </a>
+  <div class="nav-links">
+    <a href="index.html#services">Services</a>
+    <a href="audit.html" class="active">AI Audit</a>
+    <a href="index.html#about">About</a>
+    <a href="faq.html">AI FAQ</a>
+    <a href="index.html#contact" class="nav-cta">Book a Call</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="page-hero">
+  <div class="tagline">The First Step</div>
+  <h1>The <span class="accent">AI Audit</span>.</h1>
+  <p>The honest, no-pressure way to find out exactly where AI can save you time, grow your revenue, or both — without committing to anything bigger.</p>
+</section>
+
+<!-- ===== WHY AN AUDIT ===== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Why Start Here</div>
+      <h2 class="section-title">You can't fix what you can't see.</h2>
+      <p class="section-subtitle">Most small business owners know AI matters. The hard part is figuring out where to start, what's worth the money, and what's just hype. The AI Audit answers those questions.</p>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <h3>Clarity, fast</h3>
+        <p>Stop guessing. Get a clear, prioritized list of where AI actually fits your business — and where it doesn't.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+        </div>
+        <h3>No bad bets</h3>
+        <p>Avoid spending on the wrong tools or vendors. The Audit tells you what's worth the money before you spend any.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l3-3 3 3-3 3z"/><path d="M15 6l3-3 3 3-3 3z"/><path d="M15 18l3-3 3 3-3 3z"/><path d="M9 12h6"/></svg>
+        </div>
+        <h3>Built for your stack</h3>
+        <p>Every recommendation is designed to fit the tools you already use — no rip-and-replace, no costly upgrades.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TIERS ===== -->
+<section id="tiers" class="tiers-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Two Ways to Start</div>
+      <h2 class="section-title">Pick the level that fits.</h2>
+      <p class="section-subtitle">Curious and want a quick read? The Quick Scan gets you started. Ready to plan real change? The Strategy Audit goes deeper, with a roadmap you can act on.</p>
+    </div>
+
+    <div class="tier-grid">
+      <!-- Quick Scan -->
+      <div class="tier-card">
+        <div class="tier-name">Quick Scan</div>
+        <div class="tier-title">AI Quick Scan</div>
+        <div class="tier-tagline">A fast first look. Perfect if you're just exploring.</div>
+
+        <div class="tier-price">
+          <span class="currency">$</span>
+          <span class="amount">500</span>
+        </div>
+        <div class="tier-period">flat fee · delivered in 1 week</div>
+
+        <a href="index.html#contact" class="tier-cta">Start with Quick Scan →</a>
+
+        <ul class="tier-list">
+          <li>30-min kickoff call</li>
+          <li>Review of up to 3 business documents</li>
+          <li>Top 3 highest-impact AI opportunities identified</li>
+          <li>5–7 page written report with next-step suggestions</li>
+          <li>30-min live readout call</li>
+          <li class="section-divider">Delivery</li>
+          <li>100% remote (Zoom + email)</li>
+        </ul>
+      </div>
+
+      <!-- Strategy Audit -->
+      <div class="tier-card featured">
+        <div class="tier-name">Strategy Audit</div>
+        <div class="tier-title">AI Strategy Audit</div>
+        <div class="tier-tagline">A complete roadmap. Built to act on.</div>
+
+        <div class="tier-price">
+          <span class="currency">$</span>
+          <span class="amount">2,500</span>
+        </div>
+        <div class="tier-period">flat fee · delivered in 2–3 weeks</div>
+
+        <a href="index.html#contact" class="tier-cta">Start with Strategy Audit →</a>
+
+        <ul class="tier-list">
+          <li>60-min kickoff call (in-person or remote)</li>
+          <li>2–3 stakeholder interviews (you + key team members)</li>
+          <li>Full process and tool review</li>
+          <li>Top 5–7 AI opportunities with rough ROI estimates</li>
+          <li>12-page prioritized roadmap, phased by quick wins → bigger plays</li>
+          <li>Budget guidance for each phase</li>
+          <li>60-min live readout meeting</li>
+          <li>30 days of email/text Q&amp;A after the readout</li>
+          <li class="section-divider">Delivery</li>
+          <li>Remote, or on-site within 20 mi of Rockwall TX</li>
+          <li>Travel available outside that range (small fee)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="delivery-note">
+      <strong>Not sure which fits?</strong> Book a free Discovery Call and we'll recommend the right tier in 10 minutes. No pitch.
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">What to Expect</div>
+      <h2 class="section-title">A clear, simple process.</h2>
+      <p class="section-subtitle">No mystery. No drawn-out sales cycle. Here's exactly what happens from your first call to your final readout.</p>
+    </div>
+
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-num">01</div>
+        <h4>Discovery Call</h4>
+        <p>Free 30-minute chat. We figure out fit and the right tier.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">02</div>
+        <h4>Kickoff</h4>
+        <p>You share context, tools, and goals. We agree on scope.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">03</div>
+        <h4>Audit</h4>
+        <p>We dig in — interviews, document review, opportunity scoring.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-num">04</div>
+        <h4>Readout</h4>
+        <p>Live walkthrough of your report. You walk away with a plan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AUDIT FAQ ===== -->
+<section style="background: linear-gradient(180deg, transparent, rgba(15, 30, 58, 0.3), transparent);">
+  <div class="container-narrow">
+    <div class="section-header">
+      <div class="section-tag">Common Questions</div>
+      <h2 class="section-title">About the Audit.</h2>
+    </div>
+
+    <div class="audit-faq">
+      <div class="audit-faq-item">
+        <h3>What if AI isn't right for my business yet?</h3>
+        <p>Then we'll tell you. The Audit is honest — if there's no clear opportunity, you'll hear that, and we'll point you toward what to focus on instead. You still walk away with a clear picture.</p>
+      </div>
+
+      <div class="audit-faq-item">
+        <h3>Do I have to buy a build project after the Audit?</h3>
+        <p>No. The Audit stands on its own. Many clients take the report and run with it themselves, share it with their existing IT person, or use it to evaluate other vendors. If you want us to build, that's a separate conversation.</p>
+      </div>
+
+      <div class="audit-faq-item">
+        <h3>What information do I need to provide?</h3>
+        <p>For the Quick Scan, we'll ask for a few key documents (your website, a list of your main tools, a description of your top pain points). For the Strategy Audit, add a few short stakeholder interviews. We make it easy — most prep is under an hour for you.</p>
+      </div>
+
+      <div class="audit-faq-item">
+        <h3>Is my business data safe?</h3>
+        <p>Yes. We sign a mutual NDA before any audit begins, store all materials in a private, encrypted workspace, and delete everything after delivery if you ask us to.</p>
+      </div>
+
+      <div class="audit-faq-item">
+        <h3>Can I do an on-site audit?</h3>
+        <p>The Strategy Audit can be done on-site at no extra cost if you're within 20 miles of Rockwall, TX. Outside that radius, we can travel for a small fee — just ask during your Discovery Call.</p>
+      </div>
+
+      <div class="audit-faq-item">
+        <h3>How quickly can we start?</h3>
+        <p>Usually within a week of your Discovery Call. Quick Scans are delivered in 1 week from kickoff. Strategy Audits take 2–3 weeks.</p>
+      </div>
+
+      <div class="audit-faq-item">
+        <h3>What's NOT included?</h3>
+        <p>The Audit is strategy and direction. It does not include implementation, build work, software costs (tools, subscriptions), or ongoing support. Those are separate engagements we can scope after the Audit if you want our help executing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <div class="cta-wrap">
+    <div class="cta-content">
+      <div class="section-tag" style="margin-bottom: 16px;">Ready to Start?</div>
+      <h2>Book a free Discovery Call.</h2>
+      <p>30 minutes. No pitch. We'll listen to where you are and recommend the right Audit tier — or tell you honestly if you don't need one.</p>
+      <a href="index.html#contact" class="btn-primary">Book Your Discovery Call →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-brand">MAVERICK AI CONSULTING</div>
+  <div class="footer-tag">Guiding Intelligence · Delivering Impact</div>
+  <div>&copy; 2026 Maverick AI Consulting · Rockwall, TX · All rights reserved</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

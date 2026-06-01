@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Claude Code local tooling
+.claude/
+
+# Internal planning & strategy docs (not for public repo)
+client-profile.md
+project-brief.md
+audit-product-spec.md
+hero-design-plan.md
+CLAUDE.md
+AGENTS.md
+
+# SEO keyword research (competitive intelligence)
+*.csv

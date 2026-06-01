@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI in Plain English | Maverick AI Consulting FAQ & Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #050B1A;
+    --bg-dark: #0A1428;
+    --bg-card: #0F1E3A;
+    --bg-card-hover: #142847;
+    --primary: #1B6FDB;
+    --primary-bright: #2E8AF5;
+    --primary-deep: #003B8C;
+    --accent-cyan: #7DF9FF;
+    --accent-silver: #E8F0F8;
+    --text-bright: #FFFFFF;
+    --text-body: #C8D4E6;
+    --text-muted: #7A8BA8;
+    --border: rgba(125, 249, 255, 0.15);
+    --border-strong: rgba(125, 249, 255, 0.3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-body);
+    overflow-x: hidden;
+    line-height: 1.65;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(27, 111, 219, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27, 111, 219, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 { width: 500px; height: 500px; background: var(--primary); top: -100px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--accent-cyan); bottom: -100px; right: -100px; opacity: 0.12; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(5, 11, 26, 0.7);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-bright);
+    letter-spacing: 2px;
+    text-decoration: none;
+  }
+  .nav-brand svg { width: 36px; height: 36px; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-body);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent-cyan); }
+  .nav-links a.active { color: var(--accent-cyan); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--primary), var(--primary-bright));
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600 !important;
+    transition: all 0.3s !important;
+    box-shadow: 0 4px 20px rgba(46, 138, 245, 0.3);
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(46, 138, 245, 0.5); }
+
+  /* Hero */
+  .page-hero {
+    padding: 160px 40px 60px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .page-hero .tagline {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-cyan);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .page-hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-bright);
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+  }
+  .page-hero h1 .accent {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--primary-bright));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .page-hero p {
+    font-size: 18px;
+    color: var(--text-body);
+    max-width: 640px;
+    margin: 0 auto 32px;
+  }
+  .quick-nav {
+    display: inline-flex;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px;
+    margin-top: 8px;
+  }
+  .quick-nav a {
+    color: var(--text-body);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 100px;
+    transition: all 0.2s;
+  }
+  .quick-nav a:hover { background: var(--bg-card-hover); color: var(--accent-cyan); }
+
+  /* Sections */
+  section { position: relative; z-index: 1; padding: 80px 40px; }
+  .container { max-width: 920px; margin: 0 auto; }
+  .container-wide { max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    display: inline-block;
+    color: var(--accent-cyan);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding: 6px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    background: rgba(125, 249, 255, 0.05);
+  }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+  }
+  .section-subtitle {
+    font-size: 17px;
+    color: var(--text-body);
+    margin-bottom: 48px;
+  }
+  .section-header { margin-bottom: 48px; }
+
+  /* FAQ */
+  .faq-grid { display: flex; flex-direction: column; gap: 16px; }
+  .faq-item {
+    background: linear-gradient(180deg, var(--bg-card), rgba(15, 30, 58, 0.4));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    transition: all 0.3s;
+  }
+  .faq-item:hover { border-color: var(--border-strong); background: linear-gradient(180deg, var(--bg-card-hover), rgba(15, 30, 58, 0.6)); }
+  .faq-item h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 19px;
+    color: var(--text-bright);
+    margin-bottom: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .faq-item h3::before {
+    content: '?';
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(27, 111, 219, 0.2), rgba(125, 249, 255, 0.1));
+    border: 1px solid var(--border-strong);
+    color: var(--accent-cyan);
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .faq-item p { font-size: 16px; line-height: 1.7; padding-left: 42px; }
+
+  /* Glossary */
+  .glossary-section { background: linear-gradient(180deg, transparent, rgba(15, 30, 58, 0.3), transparent); }
+  .letter-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 48px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .letter-nav a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .letter-nav a:hover { background: rgba(125, 249, 255, 0.1); border-color: var(--border-strong); }
+
+  .letter-group {
+    margin-bottom: 48px;
+    scroll-margin-top: 100px;
+  }
+  .letter-heading {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--primary-bright));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+
+  .term {
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(125, 249, 255, 0.08);
+    scroll-margin-top: 100px;
+  }
+  .term:last-child { border-bottom: none; }
+  .term h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .term h4 .pronounce {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: 8px;
+    letter-spacing: 0.5px;
+  }
+  .term p { font-size: 16px; line-height: 1.7; color: var(--text-body); }
+  .term .practical {
+    margin-top: 10px;
+    padding: 12px 16px;
+    background: rgba(125, 249, 255, 0.05);
+    border-left: 3px solid var(--accent-cyan);
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--text-body);
+  }
+  .term .practical strong { color: var(--accent-cyan); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+  /* CTA */
+  .cta-section { padding: 100px 40px; }
+  .cta-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, var(--bg-card), rgba(15, 30, 58, 0.6));
+    border: 1px solid var(--border-strong);
+    border-radius: 24px;
+    padding: 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-wrap::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; right: -50%; bottom: -50%;
+    background: radial-gradient(circle, rgba(125, 249, 255, 0.08) 0%, transparent 50%);
+    animation: slowRotate 30s linear infinite;
+    z-index: 0;
+  }
+  .cta-content { position: relative; z-index: 1; }
+  .cta-wrap h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 36px;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .cta-wrap p { font-size: 17px; margin-bottom: 32px; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-bright));
+    color: white;
+    padding: 16px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 8px 30px rgba(46, 138, 245, 0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(46, 138, 245, 0.6); }
+
+  @keyframes slowRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Footer */
+  footer {
+    padding: 60px 40px 40px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+  }
+  footer .footer-brand {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-bright);
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+  footer .footer-tag {
+    color: var(--accent-cyan);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  /* Back to top */
+  .back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    color: var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 99;
+    opacity: 0;
+    transition: all 0.3s;
+    text-decoration: none;
+    pointer-events: none;
+  }
+  .back-to-top.visible { opacity: 1; pointer-events: all; }
+  .back-to-top:hover { background: var(--bg-card-hover); transform: translateY(-3px); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links a:not(.nav-cta):not(.active) { display: none; }
+    .page-hero { padding: 120px 20px 40px; }
+    section { padding: 60px 20px; }
+    .faq-item { padding: 22px; }
+    .faq-item h3 { font-size: 17px; }
+    .faq-item p { padding-left: 0; font-size: 15px; }
+    .cta-wrap { padding: 36px 24px; }
+    .cta-wrap h2 { font-size: 26px; }
+    .letter-heading { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- ===== NAVIGATION ===== -->
+<nav>
+  <a href="index.html" class="nav-brand">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="navStarLight" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#2E8AF5"/>
+          <stop offset="100%" stop-color="#1B6FDB"/>
+        </linearGradient>
+        <linearGradient id="navStarDark" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#0053BC"/>
+          <stop offset="100%" stop-color="#001F45"/>
+        </linearGradient>
+      </defs>
+      <polygon points="0,0 0,-80 -17.8,-24.6" fill="url(#navStarLight)"/>
+      <polygon points="0,0 -76.1,-24.7 -28.9,9.4" fill="url(#navStarLight)"/>
+      <polygon points="0,0 -47,64.7 0,30.4" fill="url(#navStarLight)"/>
+      <polygon points="0,0 47,64.7 28.9,9.4" fill="url(#navStarLight)"/>
+      <polygon points="0,0 76.1,-24.7 17.8,-24.6" fill="url(#navStarLight)"/>
+      <polygon points="0,0 0,-80 17.8,-24.6" fill="url(#navStarDark)"/>
+      <polygon points="0,0 -76.1,-24.7 -17.8,-24.6" fill="url(#navStarDark)"/>
+      <polygon points="0,0 -47,64.7 -28.9,9.4" fill="url(#navStarDark)"/>
+      <polygon points="0,0 47,64.7 0,30.4" fill="url(#navStarDark)"/>
+      <polygon points="0,0 76.1,-24.7 28.9,9.4" fill="url(#navStarDark)"/>
+      <circle cx="0" cy="0" r="6" fill="#FFFFFF"/>
+    </svg>
+    MAVERICK AI
+  </a>
+  <div class="nav-links">
+    <a href="index.html#services">Services</a>
+    <a href="index.html#approach">Approach</a>
+    <a href="faq.html" class="active">AI FAQ</a>
+    <a href="index.html#contact">Contact</a>
+    <a href="index.html#contact" class="nav-cta">Book a Call</a>
+  </div>
+</nav>
+
+<!-- ===== PAGE HERO ===== -->
+<section class="page-hero">
+  <div class="tagline">No Jargon · No Buzzwords</div>
+  <h1>AI, in <span class="accent">plain English</span>.</h1>
+  <p>You don't need a tech degree to use AI in your business. This page answers the most common questions we hear from small business owners — and explains the most common AI terms in language anyone can follow.</p>
+  <div class="quick-nav">
+    <a href="#faq">Common Questions</a>
+    <a href="#glossary">AI Glossary</a>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Common Questions</div>
+      <h2 class="section-title">Questions small business owners ask us.</h2>
+      <p class="section-subtitle">If your question isn't here, ask it on a Discovery Call — they're free and the only dumb question is the one you don't ask.</p>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h3>What is AI, really?</h3>
+        <p>AI (short for Artificial Intelligence) is software that can understand, learn, and make decisions in ways that used to need a person. Today's AI can read, write, talk, see, and help with everyday business tasks — answering customer questions, scheduling appointments, summarizing meetings, sorting through documents, and a lot more.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Is AI safe for my business data?</h3>
+        <p>Yes — when it's set up correctly. We design AI solutions that keep your data private and secure. We choose tools that don't train on your information, follow security best practices, and walk you through exactly where your data goes and how it's protected. You stay in control.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>How much does AI cost for a small business?</h3>
+        <p>It depends on what you build. A simple chatbot might run a few hundred dollars per month to operate. A custom workflow automation could be a one-time build cost plus a small monthly fee. The Discovery Call is free — we'll give you a straight answer on costs before you commit to anything.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Will AI replace my employees?</h3>
+        <p>For most small businesses, AI works best as a helper — not a replacement. It handles repetitive tasks (answering common questions, sorting emails, scheduling) so your team can focus on the work that actually grows your business. Most of our clients use AI to do more with their existing team, not less.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Do I need to be technical to use AI?</h3>
+        <p>No. The whole point of our work is that you don't have to be. We build AI that fits into the tools you already use. If you can send an email and click a button, you can use what we build for you.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>How long does an AI project take?</h3>
+        <p>Most small business projects take 2 to 8 weeks from start to launch, depending on complexity. A simple chatbot might launch in a couple weeks. A more involved workflow automation might take 6 to 8 weeks. We're upfront about timelines from day one — no surprises.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Do I need a lot of data to use AI?</h3>
+        <p>Not as much as you'd think. Many modern AI tools work great with the information your business already has — FAQs, policies, manuals, past emails, product info. You don't need a giant database to get real value.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What kinds of businesses benefit most from AI?</h3>
+        <p>Any business with repetitive tasks, frequent customer questions, or lots of documents to manage. That includes retail, service businesses, real estate, healthcare practices, restaurants, professional services, and many more. If your team handles the same questions or tasks over and over — AI can probably help.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What's the difference between consulting and development?</h3>
+        <p>Consulting is the thinking and planning work — figuring out where AI fits, what to build, and in what order. Development is the building and launching part. Most clients start with consulting (a Discovery Call or AI Audit) and decide from there whether they want us to build it for them or work with their existing team.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What happens after the AI is built?</h3>
+        <p>We don't disappear. Through our Retainer Support, we monitor your AI, fix any issues, and add improvements as your business changes. Most small business owners prefer this over hiring an in-house tech person — it's more affordable and you get a real expert when you need one.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What if I'm not sure what I need?</h3>
+        <p>That's the most common starting point — and exactly what the Discovery Call is for. It's free and there's no commitment. We'll listen, ask questions, and tell you honestly whether AI is right for your situation. Sometimes the answer is "not yet" — and we'll tell you that too.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Where do I start?</h3>
+        <p>Book a Discovery Call. It's free, 30 minutes, and we'll point you in the right direction — even if that direction doesn't include working with us. That's the whole point.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GLOSSARY ===== -->
+<section id="glossary" class="glossary-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">AI Glossary</div>
+      <h2 class="section-title">AI terms, explained simply.</h2>
+      <p class="section-subtitle">Heard a term and not sure what it means? Find it here. Every entry includes a plain-English definition and a quick note on what it means for your business.</p>
+    </div>
+
+    <div class="letter-nav">
+      <a href="#letter-a">A</a>
+      <a href="#letter-c">C</a>
+      <a href="#letter-l">L</a>
+      <a href="#letter-m">M</a>
+      <a href="#letter-p">P</a>
+      <a href="#letter-r">R</a>
+      <a href="#letter-t">T</a>
+      <a href="#letter-v">V</a>
+      <a href="#letter-w">W</a>
+    </div>
+
+    <!-- A -->
+    <div id="letter-a" class="letter-group">
+      <div class="letter-heading">A</div>
+
+      <div class="term" id="ai">
+        <h4>AI <span class="pronounce">Artificial Intelligence</span></h4>
+        <p>Software that can understand, learn, and make decisions like a person would. Modern AI can read, write, talk, look at images, and help with tasks you'd normally need a human to handle.</p>
+      </div>
+
+      <div class="term" id="ai-agent">
+        <h4>AI Agent</h4>
+        <p>A type of AI that can take actions on your behalf — like booking appointments, sending emails, updating records, or processing orders — instead of just answering questions. Think of it as an assistant that can actually <em>do</em> things, not just talk about them.</p>
+        <div class="practical"><strong>For your business</strong>: Great for tasks like automated scheduling, lead follow-up, or routine paperwork that today eats up your team's time.</div>
+      </div>
+
+      <div class="term" id="ai-audit">
+        <h4>AI Audit</h4>
+        <p>Our detailed review of your business to find the best opportunities for AI. We look at your processes, your tools, and your goals, then map out where AI can save you time or grow your revenue.</p>
+        <div class="practical"><strong>What you get</strong>: A clear, prioritized list of where AI fits your business — with realistic costs and timelines for each option.</div>
+      </div>
+
+      <div class="term" id="ai-os">
+        <h4>AI O/S <span class="pronounce">AI Operating System</span></h4>
+        <p>A bigger setup where multiple AI tools work together as one connected system across your business. Think of it as a "command center" that ties chatbots, automations, and agents into a single smart layer over your daily operations.</p>
+        <div class="practical"><strong>For your business</strong>: This is for businesses ready to make AI a core part of how they operate. Most clients start smaller and grow into this over time.</div>
+      </div>
+
+      <div class="term" id="automation">
+        <h4>Automation</h4>
+        <p>Software that does a repetitive task for you, automatically. Examples: an email that sends itself when a new lead comes in, or a system that copies info from one tool into another without anyone clicking.</p>
+        <div class="practical"><strong>For your business</strong>: The fastest way to save real hours. Most small businesses have at least 5 to 10 tasks that can be automated immediately.</div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div id="letter-c" class="letter-group">
+      <div class="letter-heading">C</div>
+
+      <div class="term" id="chatbot">
+        <h4>Chatbot</h4>
+        <p>An AI that talks to your customers (or your team) in plain language. Can answer questions on your website, in a messaging app, or over text — 24 hours a day, without you lifting a finger.</p>
+        <div class="practical"><strong>For your business</strong>: Best for handling the same customer questions you answer over and over — pricing, hours, services, returns, scheduling.</div>
+      </div>
+    </div>
+
+    <!-- L -->
+    <div id="letter-l" class="letter-group">
+      <div class="letter-heading">L</div>
+
+      <div class="term" id="llm">
+        <h4>LLM <span class="pronounce">Large Language Model</span></h4>
+        <p>The kind of AI that powers tools like ChatGPT and Claude. It's trained on a huge amount of text so it can read and write naturally — and it's the engine behind most modern chatbots and assistants.</p>
+        <div class="practical"><strong>For your business</strong>: You don't need to pick or manage these — we choose the right LLM for each project based on cost, speed, and quality.</div>
+      </div>
+    </div>
+
+    <!-- M -->
+    <div id="letter-m" class="letter-group">
+      <div class="letter-heading">M</div>
+
+      <div class="term" id="machine-learning">
+        <h4>Machine Learning <span class="pronounce">ML</span></h4>
+        <p>A way of building AI by letting it learn patterns from data, rather than programming every rule by hand. The more good examples it sees, the better it gets at making predictions.</p>
+      </div>
+
+      <div class="term" id="model">
+        <h4>Model</h4>
+        <p>The "brain" inside an AI tool. Different models are good at different things — some are great at writing, some at numbers, some at understanding images. We pick the right one for your job.</p>
+      </div>
+    </div>
+
+    <!-- P -->
+    <div id="letter-p" class="letter-group">
+      <div class="letter-heading">P</div>
+
+      <div class="term" id="prompt">
+        <h4>Prompt</h4>
+        <p>The instructions you give an AI to get the answer you want. Good prompts get good answers — and a big part of what we teach in our Training sessions is how to write prompts that get great results from any AI tool.</p>
+      </div>
+    </div>
+
+    <!-- R -->
+    <div id="letter-r" class="letter-group">
+      <div class="letter-heading">R</div>
+
+      <div class="term" id="rag">
+        <h4>RAG <span class="pronounce">Retrieval-Augmented Generation</span></h4>
+        <p>Fancy term for: AI that's allowed to look stuff up in your business documents before answering. So instead of guessing, it pulls real answers from your handbook, FAQs, contracts, or wherever your knowledge lives.</p>
+        <div class="practical"><strong>For your business</strong>: This is how we build chatbots and assistants that actually know <em>your</em> business — not generic answers from the internet.</div>
+      </div>
+
+      <div class="term" id="retainer">
+        <h4>Retainer</h4>
+        <p>A monthly arrangement where we provide ongoing support, monitoring, and improvements for your AI systems. Like having a part-time AI expert on call — without hiring full-time.</p>
+        <div class="practical"><strong>For your business</strong>: Most clients move to a retainer after launch. It's the most affordable way to make sure your AI keeps working as your business grows.</div>
+      </div>
+
+      <div class="term" id="roadmap">
+        <h4>Roadmap</h4>
+        <p>A clear plan that shows what to build, when to build it, and why. Yours will be tailored to your business goals and budget — not a generic checklist.</p>
+      </div>
+    </div>
+
+    <!-- T -->
+    <div id="letter-t" class="letter-group">
+      <div class="letter-heading">T</div>
+
+      <div class="term" id="tokens">
+        <h4>Tokens</h4>
+        <p>The way AI tools count how much text they're processing. You don't need to worry about it day-to-day, but it's how AI providers measure usage and pricing.</p>
+      </div>
+
+      <div class="term" id="training-data">
+        <h4>Training Data</h4>
+        <p>The information an AI learned from. For your AI tools, this could include your business documents, FAQs, or examples of past customer conversations. The cleaner the data, the better the AI works.</p>
+      </div>
+    </div>
+
+    <!-- V -->
+    <div id="letter-v" class="letter-group">
+      <div class="letter-heading">V</div>
+
+      <div class="term" id="voice-automation">
+        <h4>Voice Automation</h4>
+        <p>AI that can talk and listen on the phone or through a voice interface. Examples: a virtual receptionist that answers calls, books appointments, or handles common questions — in your business voice.</p>
+        <div class="practical"><strong>For your business</strong>: A game-changer for service businesses that miss calls or pay for an answering service. Available 24/7, never has a bad day.</div>
+      </div>
+    </div>
+
+    <!-- W -->
+    <div id="letter-w" class="letter-group">
+      <div class="letter-heading">W</div>
+
+      <div class="term" id="workflow-automation">
+        <h4>Workflow Automation</h4>
+        <p>When you connect multiple tools and steps together so a process runs by itself. Example: a new contact form submission automatically creates a customer record, sends a welcome email, and notifies your team — no manual work.</p>
+        <div class="practical"><strong>For your business</strong>: One of the highest-ROI things we build. If your team is copying data between tools, this is for you.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <div class="cta-wrap">
+    <div class="cta-content">
+      <div class="section-tag" style="margin-bottom: 16px;">Still Have Questions?</div>
+      <h2>Let's talk it through.</h2>
+      <p>30 minutes. Free. No pitch. We'll answer your questions and tell you honestly whether AI makes sense for your business right now.</p>
+      <a href="index.html#contact" class="btn-primary">Book a Discovery Call →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-brand">MAVERICK AI CONSULTING</div>
+  <div class="footer-tag">Guiding Intelligence · Delivering Impact</div>
+  <div>&copy; 2026 Maverick AI Consulting · Rockwall, TX · All rights reserved</div>
+</footer>
+
+<!-- Back to top button -->
+<a href="#" class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+</a>
+
+<script>
+  // Back-to-top button
+  const btnTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 600) btnTop.classList.add('visible');
+    else btnTop.classList.remove('visible');
+  });
+  btnTop.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+<script src="app.js"></script>
+</body>
+</html>
