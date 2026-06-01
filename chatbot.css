@@ -308,8 +308,95 @@
 .mav-send-btn:hover { opacity: 0.82; }
 .mav-send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
+/* Tooltip bubble */
+#mav-chat-tooltip {
+  position: fixed;
+  bottom: 104px;
+  right: 24px;
+  z-index: 9997;
+  background: #0F1E3A;
+  border: 1px solid rgba(125,249,255,0.3);
+  border-radius: 12px;
+  padding: 12px 36px 12px 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 16px rgba(125,249,255,0.08);
+  max-width: 220px;
+  animation: mav-tooltip-in 0.35s ease forwards;
+  cursor: default;
+}
+
+#mav-chat-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 22px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #0F1E3A;
+  filter: drop-shadow(0 2px 0 rgba(125,249,255,0.2));
+}
+
+#mav-chat-tooltip p {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #C8D4E6;
+  margin: 0;
+  line-height: 1.5;
+}
+
+#mav-chat-tooltip strong { color: #7DF9FF; }
+
+#mav-chat-tooltip.mav-tooltip-out {
+  animation: mav-tooltip-out 0.2s ease forwards;
+}
+
+.mav-tooltip-close {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #7A8BA8;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: color 0.15s;
+}
+
+.mav-tooltip-close:hover { color: #7DF9FF; }
+
+@keyframes mav-tooltip-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mav-tooltip-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(6px); }
+}
+
+/* Pulse ring on chat button */
+#mav-chat-btn.mav-btn-pulse::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(125,249,255,0.5);
+  animation: mav-ring 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes mav-ring {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
 /* Mobile */
 @media (max-width: 440px) {
   #mav-chat-btn { right: 16px; bottom: 20px; }
   #mav-chat-panel { right: 12px; left: 12px; width: auto; bottom: 92px; }
+  #mav-chat-tooltip { right: 12px; }
 }

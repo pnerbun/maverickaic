@@ -25,6 +25,10 @@
   ];
 
   var WIDGET_HTML = [
+    '<div id="mav-chat-tooltip" style="display:none">',
+    '  <button class="mav-tooltip-close" aria-label="Dismiss">&times;</button>',
+    '  <p>Find out how <strong>Maverick AI</strong> can save you 10+ hours per week!</p>',
+    '</div>',
     '<button id="mav-chat-btn" aria-label="Chat with Maverick AI">',
     '  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">',
     '    <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="#7DF9FF" opacity="0.85"/>',
@@ -76,6 +80,11 @@
     document.querySelector('.mav-chat-close').addEventListener('click', closePanel);
     document.getElementById('mav-send').addEventListener('click', sendMessage);
     document.getElementById('mav-email-submit').addEventListener('click', handleEmailSubmit);
+    document.querySelector('.mav-tooltip-close').addEventListener('click', dismissTooltip);
+
+    if (!sessionStorage.getItem('mav-tooltip-seen')) {
+      setTimeout(showTooltip, 4000);
+    }
 
     var ta = document.getElementById('mav-input');
     ta.addEventListener('keydown', function (e) {
@@ -96,8 +105,25 @@
     if (isOpen) closePanel(); else openPanel();
   }
 
+  function showTooltip() {
+    var tip = document.getElementById('mav-chat-tooltip');
+    if (!tip) return;
+    tip.style.display = 'block';
+    document.getElementById('mav-chat-btn').classList.add('mav-btn-pulse');
+  }
+
+  function dismissTooltip() {
+    var tip = document.getElementById('mav-chat-tooltip');
+    if (!tip || tip.style.display === 'none') return;
+    tip.classList.add('mav-tooltip-out');
+    document.getElementById('mav-chat-btn').classList.remove('mav-btn-pulse');
+    sessionStorage.setItem('mav-tooltip-seen', '1');
+    setTimeout(function () { tip.style.display = 'none'; }, 220);
+  }
+
   function openPanel() {
     isOpen = true;
+    dismissTooltip();
     document.getElementById('mav-chat-panel').classList.remove('hidden');
     if (messages.length === 0) startConversation();
     else scrollBottom();
