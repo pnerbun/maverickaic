@@ -1,0 +1,9 @@
+{
+  "name": "maverick-ai-consulting",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Maverick AI Consulting website",
+  "engines": {
+    "node": ">=18"
+  }
+}

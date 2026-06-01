@@ -602,17 +602,11 @@
     height: 180px;
     margin: 0 auto 24px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 64px;
-    color: var(--text-bright);
+    object-fit: cover;
+    object-position: center top;
     border: 3px solid var(--accent-cyan);
     box-shadow: 0 12px 40px rgba(27, 111, 219, 0.4);
-    /* Swap for: background: url('patrick.jpg') center/cover; font-size: 0; */
+    display: block;
   }
   .avatar-card h3 {
     font-family: 'Space Grotesk', sans-serif;
@@ -849,6 +843,7 @@
     .form-field.full { grid-column: span 1; }
   }
 </style>
+<link rel="stylesheet" href="chatbot.css">
 </head>
 <body>
 
@@ -1175,8 +1170,7 @@
 
     <div class="about-grid">
       <div class="avatar-card reveal">
-        <!-- Swap the .avatar div below with a real photo when ready. -->
-        <div class="avatar">PN</div>
+        <img src="photos/Headshot-Patrick-Nerbun-2026-06-01-69.jpeg" alt="Patrick Nerbun" class="avatar">
         <h3>Patrick Nerbun</h3>
         <div class="role">Founder · Solutions Architect</div>
         <div class="location">
@@ -1264,6 +1258,7 @@
 
 <!-- Shared site behaviors (scroll reveal + CTA → star animation) -->
 <script src="app.js"></script>
+<script src="chatbot.js"></script>
 
 <!-- Tally embed script (with direct-src fallback if widget script fails) -->
 <script>
