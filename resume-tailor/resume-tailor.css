@@ -1,0 +1,329 @@
+/* Resume Tailor app-specific styles — extends ../styles.css design tokens */
+
+/* ── App shell layout ── */
+.rt-shell {
+  min-height: 100vh;
+  padding-top: 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.rt-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* ── Auth gate ── */
+.rt-auth {
+  max-width: 480px;
+  margin: 80px auto;
+  text-align: center;
+}
+.rt-auth h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 12px;
+}
+.rt-auth p { color: var(--text-body); margin-bottom: 32px; }
+
+/* ── Cards ── */
+.rt-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 16px;
+}
+.rt-card:hover { border-color: var(--border-strong); }
+
+/* ── Credits badge ── */
+.credits-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(125, 249, 255, 0.08);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+}
+.credits-badge .credits-num {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ── Dashboard run history table ── */
+.run-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.run-table th {
+  text-align: left;
+  padding: 12px 16px;
+  color: var(--text-muted);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.run-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(125,249,255,0.06);
+  color: var(--text-body);
+  vertical-align: middle;
+}
+.run-table tr:last-child td { border-bottom: none; }
+.run-table tr:hover td { background: rgba(125,249,255,0.03); }
+
+/* ── Grade badges ── */
+.grade-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.grade-high  { background: rgba(34,197,94,0.15); color: #22c55e; }
+.grade-mid   { background: rgba(234,179,8,0.15); color: #eab308; }
+.grade-low   { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+/* ── Status chips ── */
+.status-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.status-queued   { background: rgba(122,139,168,0.15); color: var(--text-muted); }
+.status-running  { background: rgba(46,138,245,0.15); color: var(--primary-bright); }
+.status-complete { background: rgba(34,197,94,0.15); color: #22c55e; }
+.status-failed   { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+/* ── Progress bar ── */
+.progress-wrap {
+  background: rgba(125,249,255,0.08);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 24px 0;
+}
+.progress-label {
+  font-size: 14px;
+  color: var(--text-body);
+  margin-bottom: 10px;
+}
+.progress-track {
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* ── Job description textarea ── */
+.jd-textarea {
+  width: 100%;
+  min-height: 220px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  color: var(--text-bright);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px; /* Prevent iOS zoom */
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.jd-textarea:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+.jd-textarea::placeholder { color: var(--text-muted); }
+
+/* ── Controls row ── */
+.controls-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin: 16px 0 24px;
+}
+.control-group { display: flex; flex-direction: column; gap: 6px; }
+.control-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.control-select {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--text-bright);
+  font-size: 14px;
+  cursor: pointer;
+}
+.control-select:focus { outline: none; border-color: var(--border-strong); }
+
+/* ── Download buttons ── */
+.download-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  min-height: 44px; /* touch target */
+  transition: all 0.2s;
+}
+.btn-download-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-bright));
+  color: white;
+}
+.btn-download-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(46,138,245,0.4); }
+.btn-download-secondary {
+  background: var(--bg-card);
+  color: var(--text-bright);
+  border: 1px solid var(--border-strong);
+}
+.btn-download-secondary:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+
+/* ── Result card ── */
+.result-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin-top: 24px;
+}
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.result-grade {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── Form inputs ── */
+.rt-input {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  color: var(--text-bright);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s;
+}
+.rt-input:focus { outline: none; border-color: var(--border-strong); }
+.rt-input::placeholder { color: var(--text-muted); }
+
+/* ── Tabs / views ── */
+.rt-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.rt-tab {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+}
+.rt-tab:hover { color: var(--text-bright); }
+.rt-tab.active { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); }
+
+/* ── Empty states ── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+.empty-state h3 { color: var(--text-body); margin-bottom: 8px; font-size: 18px; }
+
+/* ── Upload zone ── */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--accent-cyan);
+  background: rgba(125,249,255,0.04);
+}
+.upload-zone input[type="file"] { display: none; }
+
+/* ── Navigation helpers ── */
+.rt-nav-links {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.rt-nav-link {
+  font-size: 14px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.rt-nav-link:hover { color: var(--accent-cyan); border-color: var(--border-strong); }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .rt-container { padding: 24px 16px; }
+  .controls-row { flex-direction: column; }
+  .controls-row .btn-primary { width: 100%; text-align: center; }
+  .download-row { flex-direction: column; }
+  .btn-download { width: 100%; justify-content: center; }
+  .run-table { font-size: 12px; }
+  .run-table th, .run-table td { padding: 10px 8px; }
+}

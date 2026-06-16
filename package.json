@@ -5,5 +5,8 @@
   "description": "Maverick AI Consulting website",
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "playwright": "^1.60.0"
   }
 }

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Tailor App | Maverick AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="resume-tailor.css">
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav>
+  <a href="../index.html" class="nav-brand">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="nsl" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#2E8AF5"/><stop offset="100%" stop-color="#1B6FDB"/></linearGradient>
+        <linearGradient id="nsd" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0053BC"/><stop offset="100%" stop-color="#001F45"/></linearGradient>
+      </defs>
+      <polygon points="0,0 0,-80 -17.8,-24.6" fill="url(#nsl)"/><polygon points="0,0 -76.1,-24.7 -28.9,9.4" fill="url(#nsl)"/>
+      <polygon points="0,0 -47,64.7 0,30.4" fill="url(#nsl)"/><polygon points="0,0 47,64.7 28.9,9.4" fill="url(#nsl)"/>
+      <polygon points="0,0 76.1,-24.7 17.8,-24.6" fill="url(#nsl)"/>
+      <polygon points="0,0 0,-80 17.8,-24.6" fill="url(#nsd)"/><polygon points="0,0 -76.1,-24.7 -17.8,-24.6" fill="url(#nsd)"/>
+      <polygon points="0,0 -47,64.7 -28.9,9.4" fill="url(#nsd)"/><polygon points="0,0 47,64.7 0,30.4" fill="url(#nsd)"/>
+      <polygon points="0,0 76.1,-24.7 28.9,9.4" fill="url(#nsd)"/><circle cx="0" cy="0" r="6" fill="#FFFFFF"/>
+    </svg>
+    MAVERICK AI
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Resume Tailor</a>
+    <a href="intake.html">My Profile</a>
+    <a href="upload.html">Documents</a>
+    <a id="signOutBtn" href="#" style="display:none;" class="nav-cta">Sign Out</a>
+  </div>
+</nav>
+
+<div class="rt-shell">
+  <div class="rt-container">
+
+    <!-- ── AUTH GATE ── -->
+    <div id="viewAuth" class="rt-auth" style="display:none;">
+      <h2>Welcome to Resume Tailor</h2>
+      <p>Sign in with your email to get started. You'll receive a magic link — no password needed.</p>
+      <div id="inviteNotice" style="display:none; background:rgba(125,249,255,0.08); border:1px solid var(--border-strong); border-radius:8px; padding:14px 18px; margin-bottom:24px; font-size:14px; color:var(--accent-cyan);">
+        ✓ Invite accepted! Enter your email to create your account.
+      </div>
+      <input type="email" id="authEmail" class="rt-input" placeholder="your@email.com" style="margin-bottom:12px;">
+      <button id="authBtn" class="btn-primary" style="width:100%; padding:14px; font-size:16px;">Send Magic Link</button>
+      <p id="authMsg" style="display:none; margin-top:16px; color:var(--accent-cyan); font-size:14px;"></p>
+      <p style="margin-top:24px; font-size:13px; color:var(--text-muted);">
+        Don't have an invite? <a href="index.html#early-access" style="color:var(--accent-cyan);">Request access →</a>
+      </p>
+    </div>
+
+    <!-- ── DASHBOARD ── -->
+    <div id="viewDash" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 style="font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; color:var(--text-bright); margin-bottom:4px;">Your Dashboard</h1>
+          <p style="font-size:14px; color:var(--text-muted);" id="userEmailLabel"></p>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <div class="credits-badge">
+            <span>Credits:</span>
+            <span class="credits-num" id="creditsBadge">—</span>
+          </div>
+          <button id="buyCreditsBtn" class="btn-secondary" style="font-size:14px; padding:8px 18px;">Buy Credits</button>
+          <button id="newRunBtn" class="btn-primary" style="font-size:14px; padding:10px 20px;">+ New Resume</button>
+        </div>
+      </div>
+
+      <div class="rt-tabs">
+        <button class="rt-tab active" data-tab="runs">Run History</button>
+        <button class="rt-tab" data-tab="admin" id="adminTab" style="display:none;">Admin</button>
+      </div>
+
+      <!-- Run history -->
+      <div id="tabRuns">
+        <div id="runsEmpty" class="empty-state" style="display:none;">
+          <h3>No runs yet</h3>
+          <p>Click "New Resume" to tailor your first resume.</p>
+        </div>
+        <div id="runsTableWrap" style="overflow-x:auto;">
+          <table class="run-table" id="runsTable" style="display:none;">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Role</th>
+                <th>Grade</th>
+                <th>ATS</th>
+                <th>Date</th>
+                <th>Downloads</th>
+              </tr>
+            </thead>
+            <tbody id="runsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin tab -->
+      <div id="tabAdmin" style="display:none;">
+        <h3 style="color:var(--text-bright); margin-bottom:16px;">Generate Invite Link</h3>
+        <div class="rt-card" style="max-width:480px;">
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <input class="rt-input" id="inviteEmail" placeholder="Recipient email (optional)">
+            <input class="rt-input" id="inviteNote" placeholder="Note (e.g. 'Beta tester: John Smith')">
+            <div style="display:flex; gap:12px;">
+              <div class="control-group">
+                <label>Free Credits</label>
+                <select class="control-select" id="inviteCredits">
+                  <option value="10">10</option>
+                  <option value="20" selected>20</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>Expires (days)</label>
+                <select class="control-select" id="inviteDays">
+                  <option value="30">30</option>
+                  <option value="90" selected>90</option>
+                  <option value="365">365</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-primary" id="genInviteBtn">Generate Invite Link</button>
+          </div>
+          <div id="inviteResult" style="display:none; margin-top:16px; background:rgba(125,249,255,0.06); border:1px solid var(--border-strong); border-radius:8px; padding:14px; font-size:13px; word-break:break-all; color:var(--accent-cyan);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NEW RUN VIEW ── -->
+    <div id="viewRun" style="display:none;">
+      <div style="margin-bottom:24px;">
+        <button id="backToDashBtn" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:14px; padding:0; display:flex; align-items:center; gap:6px;">← Back to Dashboard</button>
+      </div>
+      <h2 style="font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:700; color:var(--text-bright); margin-bottom:8px;">New Resume Run</h2>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:24px;">Paste a job description below. The AI will tailor your resume and cover letter — usually takes 3–5 minutes.</p>
+
+      <textarea class="jd-textarea" id="jdInput" placeholder="Paste the full job description here (title, requirements, responsibilities, company info)..."></textarea>
+
+      <div class="controls-row">
+        <div class="control-group">
+          <label>Resume Length</label>
+          <select class="control-select" id="pageCount">
+            <option value="1">1 Page</option>
+            <option value="2" selected>2 Pages</option>
+            <option value="3">3 Pages</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Cover Letter Words</label>
+          <select class="control-select" id="clWords">
+            <option value="350">~350 words</option>
+            <option value="400">~400 words</option>
+            <option value="450" selected>~450 words</option>
+            <option value="500">~500 words</option>
+          </select>
+        </div>
+        <button id="startRunBtn" class="btn-primary" style="padding:12px 28px; min-height:44px;">Generate Resume &amp; Cover Letter</button>
+      </div>
+
+      <div id="runProgress" style="display:none;">
+        <div class="progress-wrap">
+          <div class="progress-label" id="progressMsg">Starting...</div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+      </div>
+
+      <div id="runResult" style="display:none;">
+        <div class="result-card">
+          <div class="result-header">
+            <div>
+              <div style="font-size:13px; color:var(--text-muted); margin-bottom:4px;" id="resultCompany"></div>
+              <div style="font-size:20px; font-weight:600; color:var(--text-bright);" id="resultRole"></div>
+            </div>
+            <div style="margin-left:auto; text-align:right;">
+              <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Grade</div>
+              <div class="result-grade" id="resultGrade"></div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">ATS</div>
+              <div id="resultAts" class="status-chip"></div>
+            </div>
+          </div>
+          <p id="resultRationale" style="font-size:14px; color:var(--text-body); margin-bottom:20px; font-style:italic;"></p>
+          <div class="download-row">
+            <a id="dlResume" href="#" class="btn-download btn-download-primary" style="display:none;">
+              ↓ Download Resume
+            </a>
+            <a id="dlCoverLetter" href="#" class="btn-download btn-download-secondary" style="display:none;">
+              ↓ Download Cover Letter
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div id="runError" style="display:none; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:20px; margin-top:16px;">
+        <div style="color:#ef4444; font-weight:600; margin-bottom:8px;">Generation Failed</div>
+        <div id="runErrorMsg" style="font-size:14px; color:var(--text-body);"></div>
+        <button id="retryRunBtn" class="btn-primary" style="margin-top:16px; padding:10px 24px;">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://web-production-3813b.up.railway.app';
+const SUPABASE_URL = 'https://isrkjwzgkxqzmklxlvqc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzcmtqd3pna3hxem1rbHhsdnFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1NTQwNDgsImV4cCI6MjA5NzEzMDA0OH0.HjWIA8YH9GifvWKbf_LAjEjMXj7vQYPKGM8NlwadAS4';
+
+// ── Supabase auth helpers ────────────────────────────────────────────────────
+function getToken() { return localStorage.getItem('rt_token'); }
+function setToken(t) { localStorage.setItem('rt_token', t); }
+function clearToken() { localStorage.removeItem('rt_token'); localStorage.removeItem('rt_email'); }
+
+async function sendMagicLink(email, redirectTo) {
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+    body: JSON.stringify({ email, options: { emailRedirectTo: redirectTo } }),
+  });
+  return res.ok;
+}
+
+async function exchangeOtpToken(tokenHash) {
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+    body: JSON.stringify({ token_hash: tokenHash, type: 'email' }),
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.access_token || null;
+}
+
+async function apiGet(path) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: { 'Authorization': `Bearer ${getToken()}` }
+  });
+  if (res.status === 401) { clearToken(); showView('auth'); return null; }
+  return res.ok ? res.json() : null;
+}
+
+async function apiPost(path, body) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (res.status === 401) { clearToken(); showView('auth'); return null; }
+  return res.json();
+}
+
+// ── View management ──────────────────────────────────────────────────────────
+function showView(name) {
+  document.querySelectorAll('[id^="view"]').forEach(el => el.style.display = 'none');
+  const el = document.getElementById(`view${name.charAt(0).toUpperCase() + name.slice(1)}`);
+  if (el) el.style.display = 'block';
+}
+
+// ── On page load ─────────────────────────────────────────────────────────────
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const invite = params.get('invite');
+  const tokenHash = params.get('token_hash');
+
+  // Handle Supabase email magic link callback
+  if (tokenHash) {
+    const token = await exchangeOtpToken(tokenHash);
+    if (token) {
+      setToken(token);
+      history.replaceState({}, '', location.pathname);
+    }
+  }
+
+  // Handle invite token from URL
+  if (invite) {
+    sessionStorage.setItem('rt_invite', invite);
+    history.replaceState({}, '', location.pathname);
+  }
+  const pendingInvite = sessionStorage.getItem('rt_invite');
+  if (pendingInvite) {
+    document.getElementById('inviteNotice').style.display = 'block';
+  }
+
+  const token = getToken();
+  if (!token) {
+    showView('auth');
+    return;
+  }
+
+  // Redeem invite if pending
+  if (pendingInvite) {
+    try {
+      await apiPost('/api/auth/redeem-token', { token: pendingInvite });
+      sessionStorage.removeItem('rt_invite');
+    } catch (e) {}
+  }
+
+  await loadDashboard();
+})();
+
+// ── Auth view ────────────────────────────────────────────────────────────────
+document.getElementById('authBtn').addEventListener('click', async () => {
+  const email = document.getElementById('authEmail').value.trim();
+  if (!email) return;
+  const ok = await sendMagicLink(email, `${location.origin}${location.pathname}`);
+  const msg = document.getElementById('authMsg');
+  msg.style.display = 'block';
+  msg.textContent = ok
+    ? `Check your email at ${email} for a sign-in link.`
+    : 'Something went wrong. Please try again.';
+});
+
+// ── Dashboard ────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  showView('dash');
+
+  const savedEmail = localStorage.getItem('rt_email');
+  if (savedEmail) document.getElementById('userEmailLabel').textContent = savedEmail;
+
+  // Load credits
+  const credits = await apiGet('/api/credits/balance');
+  if (credits) document.getElementById('creditsBadge').textContent = credits.balance;
+
+  // Load run history
+  const runs = await apiGet('/api/runs');
+  if (runs && runs.runs) renderRuns(runs.runs);
+
+  // Show admin tab if applicable — check via profile (admin has special user id)
+  // We check via a lightweight call
+  const adminResp = await apiGet('/api/access-tokens');
+  if (adminResp) {
+    document.getElementById('adminTab').style.display = 'inline-flex';
+  }
+
+  document.getElementById('signOutBtn').style.display = 'inline-flex';
+  document.getElementById('userEmailLabel').style.display = 'block';
+}
+
+function renderRuns(runs) {
+  if (!runs.length) {
+    document.getElementById('runsEmpty').style.display = 'block';
+    return;
+  }
+  const tbody = document.getElementById('runsTbody');
+  tbody.innerHTML = '';
+  const table = document.getElementById('runsTable');
+  table.style.display = 'table';
+
+  runs.forEach(run => {
+    const grade = run.final_grade;
+    const gradeClass = grade >= 8 ? 'grade-high' : grade >= 6 ? 'grade-mid' : grade ? 'grade-low' : '';
+    const statusClass = `status-${run.status}`;
+    const date = run.created_at ? new Date(run.created_at).toLocaleDateString() : '—';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${run.company_name || '—'}</td>
+      <td>${run.role_title || '—'}</td>
+      <td>${grade ? `<span class="grade-badge ${gradeClass}">${grade}/10</span>` : `<span class="status-chip ${statusClass}">${run.status}</span>`}</td>
+      <td>${run.ats_verdict ? `<span style="color:${run.ats_verdict === 'PASS' ? '#22c55e' : '#ef4444'}; font-weight:600;">${run.ats_verdict}</span>` : '—'}</td>
+      <td>${date}</td>
+      <td>${run.status === 'complete' ? `<button class="btn-download btn-download-secondary" style="padding:6px 12px; font-size:12px;" onclick="downloadRun('${run.id}')">Download</button>` : '—'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function downloadRun(runId) {
+  const data = await apiGet(`/api/runs/${runId}/download`);
+  if (!data || !data.downloads) return;
+  const dl = data.downloads;
+  if (dl.resume) {
+    const a = document.createElement('a');
+    a.href = dl.resume.url; a.download = dl.resume.filename; a.click();
+  }
+  if (dl.cover_letter) {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = dl.cover_letter.url; a.download = dl.cover_letter.filename; a.click();
+    }, 500);
+  }
+}
+
+// ── Tabs ────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.rt-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.rt-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const tabName = tab.dataset.tab;
+    document.getElementById('tabRuns').style.display = tabName === 'runs' ? 'block' : 'none';
+    document.getElementById('tabAdmin').style.display = tabName === 'admin' ? 'block' : 'none';
+  });
+});
+
+// ── New run flow ─────────────────────────────────────────────────────────────
+document.getElementById('newRunBtn')?.addEventListener('click', () => showView('run'));
+document.getElementById('backToDashBtn')?.addEventListener('click', () => loadDashboard());
+
+let activeRunId = null;
+let pollTimer = null;
+
+document.getElementById('startRunBtn').addEventListener('click', async () => {
+  const jd = document.getElementById('jdInput').value.trim();
+  if (!jd || jd.length < 50) {
+    alert('Please paste a job description (at least 50 characters).');
+    return;
+  }
+
+  document.getElementById('runProgress').style.display = 'block';
+  document.getElementById('runResult').style.display = 'none';
+  document.getElementById('runError').style.display = 'none';
+  document.getElementById('startRunBtn').disabled = true;
+
+  const data = await apiPost('/api/runs', {
+    job_description: jd,
+    resume_page_count: parseInt(document.getElementById('pageCount').value),
+    cover_letter_word_target: parseInt(document.getElementById('clWords').value),
+  });
+
+  if (!data || !data.run_id) {
+    document.getElementById('runError').style.display = 'block';
+    document.getElementById('runErrorMsg').textContent = data?.detail || 'Failed to start run. Check your credits and try again.';
+    document.getElementById('runProgress').style.display = 'none';
+    document.getElementById('startRunBtn').disabled = false;
+    return;
+  }
+
+  activeRunId = data.run_id;
+  startPolling(data.run_id);
+});
+
+function startPolling(runId) {
+  pollTimer = setInterval(async () => {
+    const data = await apiGet(`/api/runs/${runId}`);
+    if (!data || !data.run) return;
+    const run = data.run;
+
+    document.getElementById('progressMsg').textContent = run.progress_msg || 'Working...';
+    document.getElementById('progressFill').style.width = (run.progress_pct || 0) + '%';
+
+    if (run.status === 'complete') {
+      clearInterval(pollTimer);
+      await showResult(run);
+    } else if (run.status === 'failed') {
+      clearInterval(pollTimer);
+      document.getElementById('runProgress').style.display = 'none';
+      document.getElementById('runError').style.display = 'block';
+      document.getElementById('runErrorMsg').textContent = run.error_message || 'An unexpected error occurred.';
+      document.getElementById('startRunBtn').disabled = false;
+    }
+  }, 2000);
+}
+
+async function showResult(run) {
+  document.getElementById('runProgress').style.display = 'none';
+  document.getElementById('runResult').style.display = 'block';
+  document.getElementById('startRunBtn').disabled = false;
+
+  const grade = run.final_grade || 0;
+  const gradeEl = document.getElementById('resultGrade');
+  gradeEl.textContent = grade ? `${grade}/10` : '—';
+  gradeEl.style.color = grade >= 8 ? '#22c55e' : grade >= 6 ? '#eab308' : '#ef4444';
+
+  document.getElementById('resultCompany').textContent = run.company_name || '';
+  document.getElementById('resultRole').textContent = run.role_title || 'Unknown Role';
+
+  const atsEl = document.getElementById('resultAts');
+  atsEl.textContent = run.ats_verdict || '—';
+  atsEl.className = `status-chip ${run.ats_verdict === 'PASS' ? 'status-complete' : 'status-failed'}`;
+
+  document.getElementById('resultRationale').textContent = run.grade_rationale || '';
+
+  // Fetch download URLs
+  const dlData = await apiGet(`/api/runs/${run.id}/download`);
+  if (dlData && dlData.downloads) {
+    const { resume, cover_letter } = dlData.downloads;
+    if (resume) {
+      const btn = document.getElementById('dlResume');
+      btn.href = resume.url; btn.download = resume.filename; btn.style.display = 'inline-flex';
+    }
+    if (cover_letter) {
+      const btn = document.getElementById('dlCoverLetter');
+      btn.href = cover_letter.url; btn.download = cover_letter.filename; btn.style.display = 'inline-flex';
+    }
+  }
+}
+
+document.getElementById('retryRunBtn')?.addEventListener('click', () => {
+  document.getElementById('runError').style.display = 'none';
+  document.getElementById('startRunBtn').click();
+});
+
+// ── Admin ────────────────────────────────────────────────────────────────────
+document.getElementById('genInviteBtn')?.addEventListener('click', async () => {
+  const data = await apiPost('/api/access-tokens', {
+    email: document.getElementById('inviteEmail').value.trim() || null,
+    note: document.getElementById('inviteNote').value.trim() || null,
+    free_credits: parseInt(document.getElementById('inviteCredits').value),
+    expires_days: parseInt(document.getElementById('inviteDays').value),
+  });
+  const result = document.getElementById('inviteResult');
+  result.style.display = 'block';
+  result.textContent = data?.invite_url || 'Error generating link.';
+});
+
+// ── Buy credits ──────────────────────────────────────────────────────────────
+document.getElementById('buyCreditsBtn')?.addEventListener('click', async () => {
+  const pack = prompt('Choose a pack:\n1 → Starter ($10 / 5 credits)\n2 → Standard ($15 / 10 credits)\n3 → Power ($25 / 25 credits)\n\nEnter 1, 2, or 3:');
+  const packMap = { '1': 'pack_5', '2': 'pack_10', '3': 'pack_25' };
+  const packId = packMap[pack?.trim()];
+  if (!packId) return;
+  const data = await apiPost('/api/stripe/checkout', {
+    pack_id: packId,
+    success_url: `${location.href}?purchased=1`,
+    cancel_url: location.href,
+  });
+  if (data?.checkout_url) location.href = data.checkout_url;
+});
+
+// ── Sign out ──────────────────────────────────────────────────────────────────
+document.getElementById('signOutBtn')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  clearToken();
+  showView('auth');
+});
+</script>
+</body>
+</html>

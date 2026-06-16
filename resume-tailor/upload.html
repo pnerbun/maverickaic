@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documents | Resume Tailor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="resume-tailor.css">
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav>
+  <a href="../index.html" class="nav-brand">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="nsl" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#2E8AF5"/><stop offset="100%" stop-color="#1B6FDB"/></linearGradient>
+        <linearGradient id="nsd" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0053BC"/><stop offset="100%" stop-color="#001F45"/></linearGradient>
+      </defs>
+      <polygon points="0,0 0,-80 -17.8,-24.6" fill="url(#nsl)"/><polygon points="0,0 -76.1,-24.7 -28.9,9.4" fill="url(#nsl)"/>
+      <polygon points="0,0 -47,64.7 0,30.4" fill="url(#nsl)"/><polygon points="0,0 47,64.7 28.9,9.4" fill="url(#nsl)"/>
+      <polygon points="0,0 76.1,-24.7 17.8,-24.6" fill="url(#nsl)"/>
+      <polygon points="0,0 0,-80 17.8,-24.6" fill="url(#nsd)"/><polygon points="0,0 -76.1,-24.7 -17.8,-24.6" fill="url(#nsd)"/>
+      <polygon points="0,0 -47,64.7 -28.9,9.4" fill="url(#nsd)"/><polygon points="0,0 47,64.7 0,30.4" fill="url(#nsd)"/>
+      <polygon points="0,0 76.1,-24.7 28.9,9.4" fill="url(#nsd)"/><circle cx="0" cy="0" r="6" fill="#FFFFFF"/>
+    </svg>
+    MAVERICK AI
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Resume Tailor</a>
+    <a href="intake.html">My Profile</a>
+    <a href="upload.html" class="active">Documents</a>
+    <a id="signOutBtn" href="#" style="display:none;" class="nav-cta">Sign Out</a>
+  </div>
+</nav>
+
+<div class="rt-shell">
+  <div class="rt-container">
+
+    <div style="margin-bottom:32px;">
+      <h1 style="font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; color:var(--text-bright); margin-bottom:8px;">Your Documents</h1>
+      <p style="color:var(--text-muted); font-size:14px; max-width:540px;">Upload your resume(s), cover letter examples, and any supplemental context documents. Accepted formats: <strong>.docx</strong> and <strong>.odt</strong> only. Max 10MB per file.</p>
+    </div>
+
+    <!-- ── Upload zone ── -->
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" accept=".docx,.odt" multiple>
+      <div style="font-size:40px; margin-bottom:12px; opacity:0.5;">↑</div>
+      <div style="font-size:16px; font-weight:600; color:var(--text-bright); margin-bottom:6px;">Drop files here or click to browse</div>
+      <div style="font-size:13px; color:var(--text-muted);">.docx and .odt files only · 10MB max</div>
+    </div>
+
+    <!-- ── Upload staging area (pre-upload config) ── -->
+    <div id="stagingArea" style="display:none; margin-top:16px;">
+      <h3 style="font-size:15px; font-weight:600; color:var(--text-bright); margin-bottom:12px;">Configure &amp; Upload</h3>
+      <div id="stagingList"></div>
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button id="uploadAllBtn" class="btn-primary" style="padding:12px 28px;">Upload All</button>
+        <button id="clearStagingBtn" class="btn-secondary" style="padding:12px 20px;">Clear</button>
+      </div>
+    </div>
+
+    <!-- ── Upload progress messages ── -->
+    <div id="uploadStatus" style="display:none; margin:16px 0; font-size:14px; color:var(--accent-cyan);"></div>
+
+    <!-- ── Existing documents table ── -->
+    <div style="margin-top:40px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+        <h2 style="font-size:20px; font-weight:600; color:var(--text-bright);">Uploaded Documents</h2>
+        <button id="refreshBtn" style="background:none; border:1px solid var(--border); color:var(--text-muted); border-radius:6px; padding:6px 14px; font-size:13px; cursor:pointer;">Refresh</button>
+      </div>
+
+      <div id="docsEmpty" class="empty-state" style="display:none;">
+        <h3>No documents yet</h3>
+        <p>Upload your primary resume above to get started.</p>
+      </div>
+
+      <div id="docsTableWrap" style="overflow-x:auto; display:none;">
+        <table class="run-table" id="docsTable">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Type</th>
+              <th>Primary</th>
+              <th>Uploaded</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="docsTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── What each doc type does ── -->
+    <div style="margin-top:40px;">
+      <h2 style="font-size:18px; font-weight:600; color:var(--text-bright); margin-bottom:16px;">Document Types Explained</h2>
+      <div class="why-grid" style="grid-template-columns: repeat(2, 1fr); gap:16px;">
+        <div class="rt-card">
+          <h3 style="font-size:15px; color:var(--text-bright); margin-bottom:8px;">Primary Resume</h3>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">Your best current resume. The AI starts here every run. Tailor it for the broadest range of jobs you target — the AI adapts it to each specific role.</p>
+        </div>
+        <div class="rt-card">
+          <h3 style="font-size:15px; color:var(--text-bright); margin-bottom:8px;">Additional CV</h3>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">Extra resumes (different industries, career pivots, or older versions with different framing). The scorer picks the best starting point for each job automatically.</p>
+        </div>
+        <div class="rt-card">
+          <h3 style="font-size:15px; color:var(--text-bright); margin-bottom:8px;">Cover Letter Example</h3>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">Your best past cover letters. Used as style references so the AI matches your natural writing voice — sentence structure, tone, vocabulary.</p>
+        </div>
+        <div class="rt-card">
+          <h3 style="font-size:15px; color:var(--text-bright); margin-bottom:8px;">Context Document</h3>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">Supplemental context like an internal job description, a company overview, or performance reviews. Injected as background context into every run.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://web-production-3813b.up.railway.app';
+
+function getToken() { return localStorage.getItem('rt_token'); }
+function clearToken() { localStorage.removeItem('rt_token'); }
+
+if (!getToken()) { location.href = 'app.html'; }
+
+document.getElementById('signOutBtn').style.display = 'inline-flex';
+document.getElementById('signOutBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  clearToken();
+  location.href = 'app.html';
+});
+
+const DOC_TYPE_LABELS = {
+  source_resume: 'Primary Resume',
+  cv: 'Additional CV',
+  cover_letter_example: 'Cover Letter Example',
+  context_doc: 'Context Document',
+};
+
+// ── Staging area ─────────────────────────────────────────────────────────────
+let stagedFiles = [];
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  handleFiles(Array.from(e.target.files));
+  e.target.value = '';
+});
+
+const zone = document.getElementById('uploadZone');
+zone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  zone.classList.add('drag-over');
+});
+zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+zone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  handleFiles(Array.from(e.dataTransfer.files));
+});
+
+function handleFiles(files) {
+  const valid = files.filter(f => f.name.match(/\.(docx|odt)$/i));
+  const invalid = files.filter(f => !f.name.match(/\.(docx|odt)$/i));
+  if (invalid.length) {
+    showStatus(`Skipped ${invalid.length} unsupported file(s). Only .docx and .odt accepted.`, 'warn');
+  }
+  if (!valid.length) return;
+
+  valid.forEach(file => {
+    if (!stagedFiles.find(sf => sf.file.name === file.name)) {
+      stagedFiles.push({ file, docType: guessDocType(file.name) });
+    }
+  });
+  renderStaging();
+}
+
+function guessDocType(name) {
+  const lower = name.toLowerCase();
+  if (lower.includes('cover') || lower.includes('cl')) return 'cover_letter_example';
+  if (lower.includes('context') || lower.includes('jd') || lower.includes('job')) return 'context_doc';
+  return 'source_resume';
+}
+
+function renderStaging() {
+  if (!stagedFiles.length) {
+    document.getElementById('stagingArea').style.display = 'none';
+    return;
+  }
+  document.getElementById('stagingArea').style.display = 'block';
+  const list = document.getElementById('stagingList');
+  list.innerHTML = '';
+
+  stagedFiles.forEach((sf, idx) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; gap:12px; align-items:center; padding:12px 16px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; margin-bottom:8px; flex-wrap:wrap;';
+    row.innerHTML = `
+      <div style="flex:1; min-width:160px; font-size:14px; color:var(--text-bright); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${sf.file.name}</div>
+      <div style="font-size:12px; color:var(--text-muted);">${(sf.file.size / 1024).toFixed(0)} KB</div>
+      <select data-idx="${idx}" class="control-select" style="min-width:180px;">
+        <option value="source_resume"${sf.docType==='source_resume'?' selected':''}>Primary Resume</option>
+        <option value="cv"${sf.docType==='cv'?' selected':''}>Additional CV</option>
+        <option value="cover_letter_example"${sf.docType==='cover_letter_example'?' selected':''}>Cover Letter Example</option>
+        <option value="context_doc"${sf.docType==='context_doc'?' selected':''}>Context Document</option>
+      </select>
+      <button data-idx="${idx}" class="remove-staged" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:18px; line-height:1; padding:4px;">×</button>
+    `;
+    list.appendChild(row);
+  });
+
+  list.querySelectorAll('select').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      stagedFiles[parseInt(e.target.dataset.idx)].docType = e.target.value;
+    });
+  });
+  list.querySelectorAll('.remove-staged').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      stagedFiles.splice(parseInt(e.target.dataset.idx), 1);
+      renderStaging();
+    });
+  });
+}
+
+document.getElementById('clearStagingBtn').addEventListener('click', () => {
+  stagedFiles = [];
+  renderStaging();
+});
+
+document.getElementById('uploadAllBtn').addEventListener('click', uploadAll);
+
+async function uploadAll() {
+  if (!stagedFiles.length) return;
+  const btn = document.getElementById('uploadAllBtn');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+  clearStatus();
+
+  let uploaded = 0;
+  const errors = [];
+
+  for (const sf of stagedFiles) {
+    const form = new FormData();
+    form.append('file', sf.file);
+    form.append('doc_type', sf.docType);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/documents/upload`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${getToken()}` },
+        body: form,
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        errors.push(`${sf.file.name}: ${err.detail || 'Upload failed'}`);
+      } else {
+        uploaded++;
+      }
+    } catch (e) {
+      errors.push(`${sf.file.name}: Network error`);
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Upload All';
+
+  if (errors.length) {
+    showStatus(`${uploaded} uploaded, ${errors.length} failed: ${errors.join('; ')}`, 'error');
+  } else {
+    showStatus(`${uploaded} file${uploaded !== 1 ? 's' : ''} uploaded successfully.`, 'success');
+    stagedFiles = [];
+    renderStaging();
+  }
+
+  await loadDocs();
+}
+
+// ── Load existing docs ────────────────────────────────────────────────────────
+async function loadDocs() {
+  const res = await fetch(`${API_BASE}/api/documents`, {
+    headers: { 'Authorization': `Bearer ${getToken()}` },
+  });
+  if (!res.ok) { if (res.status === 401) { clearToken(); location.href = 'app.html'; } return; }
+  const data = await res.json();
+  renderDocs(data.documents || []);
+}
+
+function renderDocs(docs) {
+  if (!docs.length) {
+    document.getElementById('docsEmpty').style.display = 'block';
+    document.getElementById('docsTableWrap').style.display = 'none';
+    return;
+  }
+  document.getElementById('docsEmpty').style.display = 'none';
+  document.getElementById('docsTableWrap').style.display = 'block';
+
+  const tbody = document.getElementById('docsTbody');
+  tbody.innerHTML = '';
+
+  docs.forEach(doc => {
+    const date = doc.created_at ? new Date(doc.created_at).toLocaleDateString() : '—';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-bright);">${doc.filename}</td>
+      <td><span class="status-chip status-running" style="background:rgba(46,138,245,0.1); color:var(--primary-bright);">${DOC_TYPE_LABELS[doc.doc_type] || doc.doc_type}</span></td>
+      <td>${doc.doc_type === 'source_resume'
+        ? (doc.is_primary
+            ? '<span style="color:#22c55e; font-weight:600;">✓ Primary</span>'
+            : `<button class="set-primary-btn" data-id="${doc.id}" style="background:none; border:1px solid var(--border); color:var(--text-muted); border-radius:4px; padding:3px 10px; font-size:12px; cursor:pointer;">Set Primary</button>`)
+        : '<span style="color:var(--text-muted);">—</span>'}</td>
+      <td style="color:var(--text-muted);">${date}</td>
+      <td><button class="delete-doc-btn" data-id="${doc.id}" style="background:none; border:none; color:rgba(239,68,68,0.6); cursor:pointer; font-size:18px; padding:4px 8px;" title="Delete">×</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('.set-primary-btn').forEach(btn => {
+    btn.addEventListener('click', () => setPrimary(btn.dataset.id));
+  });
+  tbody.querySelectorAll('.delete-doc-btn').forEach(btn => {
+    btn.addEventListener('click', () => deleteDoc(btn.dataset.id));
+  });
+}
+
+async function setPrimary(docId) {
+  const res = await fetch(`${API_BASE}/api/documents/${docId}/set-primary`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getToken()}` },
+  });
+  if (res.ok) { showStatus('Primary resume updated.', 'success'); await loadDocs(); }
+}
+
+async function deleteDoc(docId) {
+  if (!confirm('Delete this document? This cannot be undone.')) return;
+  const res = await fetch(`${API_BASE}/api/documents/${docId}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${getToken()}` },
+  });
+  if (res.ok) { showStatus('Document deleted.', 'success'); await loadDocs(); }
+}
+
+document.getElementById('refreshBtn').addEventListener('click', loadDocs);
+
+function showStatus(msg, type) {
+  const el = document.getElementById('uploadStatus');
+  el.style.display = 'block';
+  el.style.color = type === 'error' ? '#ef4444' : type === 'warn' ? '#eab308' : 'var(--accent-cyan)';
+  el.textContent = msg;
+}
+function clearStatus() {
+  const el = document.getElementById('uploadStatus');
+  el.style.display = 'none';
+  el.textContent = '';
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+loadDocs();
+</script>
+</body>
+</html>

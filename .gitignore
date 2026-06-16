@@ -1,3 +1,6 @@
+# Dependencies
+node_modules/
+
 # macOS
 .DS_Store
 .AppleDouble
@@ -21,3 +24,6 @@ AGENTS.md
 
 # SEO keyword research (competitive intelligence)
 *.csv
+
+# Personal Upwork CV tool (unrelated WIP, not part of the public site)
+resume-tailor/upwork_cv_tool/
