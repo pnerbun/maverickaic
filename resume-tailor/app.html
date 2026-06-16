@@ -58,6 +58,11 @@
 
     <!-- ── DASHBOARD ── -->
     <div id="viewDash" style="display:none;">
+      <div id="profileBanner" style="display:none; margin-bottom:24px; padding:16px 20px; background:rgba(46,138,245,0.08); border:1px solid var(--border-strong); border-radius:8px; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+        <div style="font-size:14px; color:var(--text-body);">Complete your profile to get started — upload a resume so the AI can tailor it for each job.</div>
+        <a href="upload.html" class="btn-primary" style="padding:10px 22px; font-size:14px; text-decoration:none; flex-shrink:0;">Upload Resume →</a>
+      </div>
+
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; flex-wrap:wrap; gap:16px;">
         <div>
           <h1 style="font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; color:var(--text-bright); margin-bottom:4px;">Your Dashboard</h1>
@@ -332,6 +337,12 @@ async function loadDashboard() {
   // Load run history
   const runs = await apiGet('/api/runs');
   if (runs && runs.runs) renderRuns(runs.runs);
+
+  // Nudge first-time users with no uploaded documents toward upload.html
+  const docs = await apiGet('/api/documents');
+  if (docs && Array.isArray(docs.documents) && docs.documents.length === 0) {
+    document.getElementById('profileBanner').style.display = 'flex';
+  }
 
   // Show admin tab if applicable — check via profile (admin has special user id)
   // We check via a lightweight call

@@ -301,18 +301,73 @@ document.getElementById('signOutBtn').addEventListener('click', (e) => {
       return;
     } catch (e) { /* fall through */ }
   }
-  startChat();
+  await startChat();
 })();
 
-function startChat() {
-  const greeting = `Hi! I'm going to build your professional profile so Resume Tailor can create a perfectly tailored resume every time you apply.
+async function startChat() {
+  isWaiting = true;
+  document.getElementById('intakeSendBtn').disabled = true;
+  document.getElementById('intakeInput').disabled = true;
+  showTyping();
 
-This will take about 10–15 minutes. I'll ask about your contact info, work history, education, and preferences. The more detail you give, the better your resumes will be.
+  try {
+    const ctxRes = await fetch(`${API_BASE}/api/intake/context`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` },
+    });
 
-Let's start — what's your full name and current city/state?`;
-  addAIMessage(greeting);
-  messages.push({ role: 'assistant', content: greeting });
-  saveState();
+    if (!ctxRes.ok) {
+      removeTyping();
+      if (ctxRes.status === 401) { clearToken(); location.href = 'app.html'; return; }
+      // No resume uploaded yet — upload.html should already gate this, but guard anyway.
+      location.href = 'upload.html';
+      return;
+    }
+
+    const ctxData = await ctxRes.json();
+    messages.push({ role: 'user', content: ctxData.context_block || '' });
+
+    const res = await fetch(`${API_BASE}/api/intake/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify({ messages }),
+    });
+
+    removeTyping();
+
+    if (!res.ok) {
+      if (res.status === 401) { clearToken(); location.href = 'app.html'; return; }
+      addAIMessage('Something went wrong loading your profile interview. Please refresh to try again.');
+      return;
+    }
+
+    const data = await res.json();
+    const rawContent = data.content || '';
+    const { display, ready, skills } = parseResponse(rawContent);
+
+    addAIMessage(display, skills);
+    messages.push({ role: 'assistant', content: rawContent });
+
+    if (data.phase) {
+      currentPhase = data.phase;
+      updatePhaseBar(currentPhase);
+    }
+    if (ready) {
+      profileReady = true;
+      showSubmitArea();
+    }
+
+    saveState();
+  } catch (err) {
+    removeTyping();
+    addAIMessage('Connection error loading your profile interview. Please refresh to try again.');
+  } finally {
+    isWaiting = false;
+    document.getElementById('intakeSendBtn').disabled = false;
+    document.getElementById('intakeInput').disabled = false;
+  }
 }
 
 // ── Chat send ────────────────────────────────────────────────────────────────
@@ -361,9 +416,9 @@ async function sendMessage() {
 
     const data = await res.json();
     const rawContent = data.content || '';
-    const { display, ready } = parseResponse(rawContent);
+    const { display, ready, skills } = parseResponse(rawContent);
 
-    addAIMessage(display);
+    addAIMessage(display, skills);
     messages.push({ role: 'assistant', content: rawContent });
 
     if (data.phase) {
@@ -389,12 +444,21 @@ async function sendMessage() {
 }
 
 function parseResponse(raw) {
+  let working = raw;
+  let skills = null;
+
+  const skillsMatch = working.match(/\[SKILLS:(\{[\s\S]*?\})\]/);
+  if (skillsMatch) {
+    try { skills = JSON.parse(skillsMatch[1]); } catch (e) { skills = null; }
+    working = working.replace(skillsMatch[0], '').trim();
+  }
+
   const marker = '[PROFILE_READY]';
-  const idx = raw.indexOf(marker);
-  if (idx === -1) return { display: raw, ready: false };
-  const display = raw.slice(0, idx).trim() ||
+  const idx = working.indexOf(marker);
+  if (idx === -1) return { display: working, ready: false, skills };
+  const display = working.slice(0, idx).trim() ||
     "Your profile information is complete! Click **Save My Profile** below to save everything.";
-  return { display, ready: true };
+  return { display, ready: true, skills };
 }
 
 // ── Submit profile ────────────────────────────────────────────────────────────
@@ -432,10 +496,74 @@ document.getElementById('submitProfileBtn').addEventListener('click', async () =
 });
 
 // ── UI helpers ────────────────────────────────────────────────────────────────
-function addAIMessage(text) {
+function addAIMessage(text, skills) {
   const el = createBubble('intake-msg-ai', text);
   document.getElementById('intakeMessages').appendChild(el);
+  if (skills && Array.isArray(skills.options) && skills.options.length) {
+    appendSkillChips(skills);
+  }
   scroll();
+}
+
+function appendSkillChips(skills) {
+  const wrap = document.createElement('div');
+  wrap.className = 'skill-chip-group';
+  wrap.style.cssText = 'display:flex; flex-direction:column; gap:10px; max-width:82%; align-self:flex-start; margin-top:-4px;';
+
+  const chipsRow = document.createElement('div');
+  chipsRow.style.cssText = 'display:flex; flex-wrap:wrap; gap:8px;';
+
+  const selected = new Set();
+  skills.options.forEach(opt => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.textContent = opt;
+    chip.style.cssText = 'padding:8px 14px; border-radius:16px; border:1px solid var(--border); background:var(--bg-card); color:var(--text-body); font-size:13px; cursor:pointer; transition:all 0.15s;';
+    chip.addEventListener('click', () => {
+      if (selected.has(opt)) {
+        selected.delete(opt);
+        chip.style.background = 'var(--bg-card)';
+        chip.style.color = 'var(--text-body)';
+        chip.style.borderColor = 'var(--border)';
+      } else {
+        selected.add(opt);
+        chip.style.background = 'var(--accent-cyan)';
+        chip.style.color = '#04222a';
+        chip.style.borderColor = 'var(--accent-cyan)';
+      }
+    });
+    chipsRow.appendChild(chip);
+  });
+
+  const confirmBtn = document.createElement('button');
+  confirmBtn.type = 'button';
+  confirmBtn.textContent = 'Confirm Selections';
+  confirmBtn.className = 'btn-secondary';
+  confirmBtn.style.cssText = 'align-self:flex-start; padding:8px 18px; font-size:13px;';
+  confirmBtn.addEventListener('click', () => {
+    chipsRow.querySelectorAll('button').forEach(c => c.disabled = true);
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Confirmed';
+    confirmSkills(Array.from(selected), skills.options);
+  });
+
+  wrap.appendChild(chipsRow);
+  wrap.appendChild(confirmBtn);
+  document.getElementById('intakeMessages').appendChild(wrap);
+}
+
+function confirmSkills(selectedSkills, allOptions) {
+  const declined = allOptions.filter(s => !selectedSkills.includes(s));
+  let text;
+  if (selectedSkills.length && declined.length) {
+    text = `Skills confirmed: ${selectedSkills.join(', ')}. Not applicable: ${declined.join(', ')}.`;
+  } else if (selectedSkills.length) {
+    text = `Skills confirmed: ${selectedSkills.join(', ')}.`;
+  } else {
+    text = `None of these apply: ${declined.join(', ')}.`;
+  }
+  document.getElementById('intakeInput').value = text;
+  sendMessage();
 }
 
 function addUserMessage(text) {
