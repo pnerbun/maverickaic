@@ -275,7 +275,18 @@ function showView(name) {
   const invite = params.get('invite');
   const tokenHash = params.get('token_hash');
 
-  // Handle Supabase email magic link callback
+  // Handle Supabase implicit-flow callback (#access_token=... in hash)
+  // This is what email confirmation links produce when Site URL is set in Supabase dashboard
+  const hashParams = new URLSearchParams(location.hash.replace(/^#/, ''));
+  const hashAccessToken = hashParams.get('access_token');
+  if (hashAccessToken) {
+    setToken(hashAccessToken);
+    const hashEmail = hashParams.get('email');
+    if (hashEmail) localStorage.setItem('rt_email', hashEmail);
+    history.replaceState({}, '', location.pathname);
+  }
+
+  // Handle Supabase email magic link callback (?token_hash= in query string)
   if (tokenHash) {
     const token = await exchangeOtpToken(tokenHash);
     if (token) {
