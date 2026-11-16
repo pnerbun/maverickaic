@@ -1,6 +1,10 @@
+import { originAllowed, setCors } from './_guard.js';
+
 export default async function handler(req, res) {
+  setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (!originAllowed(req)) return res.status(403).json({ error: 'Forbidden' });
 
   let body = req.body;
 
@@ -11,8 +15,21 @@ export default async function handler(req, res) {
 
   const { messages, opportunities, userEmail, businessType, abandoned } = body || {};
 
-  if (!Array.isArray(messages) || messages.length === 0) {
+  if (!Array.isArray(messages) || messages.length === 0 || messages.length > 40) {
     return res.status(400).json({ error: 'messages required' });
+  }
+
+  // A real widget session always has the assistant's greeting plus at least
+  // one visitor reply. Skip the email for anything else (bots, direct calls).
+  const valid = messages.every(m => m && (m.role === 'user' || m.role === 'assistant')
+    && typeof m.content === 'string' && m.content.length <= 4000);
+  const hasAssistant = messages.some(m => m.role === 'assistant');
+  const hasVisitor = messages.some(m => m.role === 'user' && m.content !== '__start__');
+  if (!valid || !hasAssistant || !hasVisitor) {
+    return res.status(400).json({ error: 'invalid transcript' });
+  }
+  if (userEmail && (typeof userEmail !== 'string' || userEmail.length > 254 || !/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(userEmail))) {
+    return res.status(400).json({ error: 'invalid email' });
   }
 
   const resendKey = process.env.RESEND_API_KEY;

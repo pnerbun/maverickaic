@@ -1,3 +1,5 @@
+import { originAllowed, setCors, cleanChatMessages } from './_guard.js';
+
 const SYSTEM_PROMPT = `You are Maverick AI's virtual consulting assistant on maverickaic.com. Your job is to help small business owners discover exactly where AI could save them time, reduce errors, or help them scale — then connect them with Pat Nerbun for a free Discovery Call.
 
 Pat's services:
@@ -40,13 +42,13 @@ During summary:
 {"message":"your full summary message","phase":"summary","opportunities":["Specific opportunity 1 based on what they said","Specific opportunity 2","Specific opportunity 3 if applicable"]}`;
 
 export default async function handler(req, res) {
+  setCors(req, res);
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (!originAllowed(req)) return res.status(403).json({ error: 'Forbidden' });
 
-  const { messages } = req.body;
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return res.status(400).json({ error: 'messages array required' });
-  }
+  const { messages, error } = cleanChatMessages(req.body?.messages);
+  if (error) return res.status(400).json({ error });
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
